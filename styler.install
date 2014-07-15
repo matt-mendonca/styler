@@ -1,0 +1,8 @@
+<?php 
+/** 
+ * Implements hook_uninstall().
+ */
+function styler_uninstall() {
+  // Clean up variables
+  variable_del('styler_rules');
+}

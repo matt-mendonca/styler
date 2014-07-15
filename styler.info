@@ -1,0 +1,6 @@
+name = "Styler"
+description = "Allows to you add css to based on a query string parameter"
+package = "User interface"
+core = 7.x
+configure = admin/config/user-interface/styler
+version = 7.x-1.0-dev

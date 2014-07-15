@@ -1,0 +1,52 @@
+<?php
+/**
+ * Implements hook_menu().
+ *
+ * Create config page
+ */
+function styler_menu() {
+  $items['admin/config/user-interface/styler'] = array(
+    'title' => 'Styler',
+    'description' => 'Styler Configuration Page',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('styler_config_form'),
+    'file' => 'config_page.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('access administration pages'),
+    'theme callback' => 'variable_get',
+    'theme arguments' => array('admin_theme'),
+    'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+    'weight' => 9
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ * Load styles if the correct query string is set
+ */
+function styler_preprocess_page(&$vars) {
+  $query_string = drupal_get_query_parameters();
+  $styler_rules = variable_get('styler_rules'); 
+
+  if(!isset($styler_rules) || empty($query_string)):
+    return;
+  endif;
+
+  $styler_rules = json_decode($styler_rules);
+
+  foreach ($styler_rules as $key => $rule) :
+    $parameter_name = $rule->parameter_name;
+    $parameter_value = $rule->parameter_value;
+    $style_sheet = $rule->style_sheet;
+    
+    if(isset($query_string[$parameter_name]) && 
+       $query_string[$parameter_name] === $parameter_value):
+
+      drupal_add_css($style_sheet);
+    endif;
+
+  endforeach;
+}
